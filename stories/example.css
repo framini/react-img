@@ -1,0 +1,18 @@
+.picture-example {
+  width: 200px;
+  height: 265px;
+}
+
+@media (min-width: 300px) {
+  .picture-example {
+    width: 300px;
+    height: 600px;
+  }
+}
+
+@media (min-width: 500px) {
+  .picture-example {
+    width: 500px;
+    height: 600px;
+  }
+}
