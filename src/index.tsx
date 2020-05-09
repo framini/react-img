@@ -99,7 +99,7 @@ const inImageCache = (el: HTMLImageElement | null) => {
   return imageCache[src] ?? false;
 };
 
-type ProgressImageStatus = 'idle' | 'load' | 'loaded';
+type ImgStatus = 'idle' | 'load' | 'loaded' | 'error';
 
 const useImage = ({
   isCritical,
@@ -120,9 +120,7 @@ const useImage = ({
 
   const initialStatus = initialIsVisible ? 'load' : 'idle';
 
-  const [status, setStatus] = React.useState<ProgressImageStatus>(
-    initialStatus
-  );
+  const [status, setStatus] = React.useState<ImgStatus>(initialStatus);
 
   // For browsers with IntersectionObserver support the image might
   // not be visible on the initial render so we'll also rely on the
@@ -167,10 +165,14 @@ type CommonImgProps = {
   loading?: 'eager' | 'lazy' | 'auto';
   alt: string;
   objectPosition?: React.CSSProperties['objectPosition'];
+  children?: (ops: { status: ImgStatus }) => React.ReactNode;
+  errorProps?: React.ComponentProps<'div'>;
+  errorMessage?: React.ReactNode;
 };
 
 type ImgElementProps = CommonImgProps &
   React.ImgHTMLAttributes<HTMLImageElement>;
+
 type PictureElementProps = {
   sources: PictureSource[];
   fallback: string;
@@ -189,13 +191,13 @@ const isPictureElement = (props: ImgBaseProps): props is PictureElementProps =>
 const isImageElement = (props: ImgBaseProps): props is ImgElementProps =>
   !isPictureElement(props);
 
-const PictureElement = (props: PictureElementProps) => {
+const PictureElement = (props: PictureElementProps & { status: ImgStatus }) => {
   return (
     <picture>
       {props.sources.map((source, i) => {
         return <source key={i} {...source} />;
       })}
-      {props.children}
+      {props.children && props.children({ status: props.status })}
     </picture>
   );
 };
@@ -203,6 +205,7 @@ const PictureElement = (props: PictureElementProps) => {
 export const Img: ImgOverload = ({
   placeholderSrc,
   objectPosition = 'center center',
+  errorMessage = 'Image not found',
   ...restProps
 }: ImgBaseProps) => {
   const elRef = React.useRef<HTMLDivElement>(null);
@@ -249,11 +252,33 @@ export const Img: ImgOverload = ({
     return;
   }, [setStatus, useIOSupport]);
 
-  const imgProps = {
-    onLoad: () => {
-      setStatus('loaded');
+  const imgProps: React.ComponentProps<'img'> = {
+    onLoad: e => {
+      if (typeof restProps.onLoad === 'function') {
+        restProps.onLoad(e);
+      }
+
+      // if the image is `complete` without a `naturalWidth` is likely
+      // to be broken
+      if (
+        imageRef.current &&
+        imageRef.current.complete &&
+        imageRef.current.naturalWidth
+      ) {
+        setStatus('loaded');
+      } else {
+        setStatus('error');
+      }
+    },
+    onError: e => {
+      if (typeof restProps.onError === 'function') {
+        restProps.onError(e);
+      }
+
+      setStatus('error');
     },
     width: restProps.width,
+    height: restProps.height,
     style: {
       position: 'absolute',
       top: '0px',
@@ -275,8 +300,8 @@ export const Img: ImgOverload = ({
       style={{
         position: 'relative',
         overflow: 'hidden',
-        height: '100%',
-        width: '100%',
+        height: restProps.height ?? '100%',
+        width: restProps.width ?? '100%',
       }}
       ref={elRef}
     >
@@ -304,14 +329,42 @@ export const Img: ImgOverload = ({
       )}
 
       {isVisible && isPictureElement(restProps) && (
-        <PictureElement {...restProps}>
-          <BaseImg
-            {...restProps}
-            {...(imgProps as any)}
-            src={restProps.fallback}
-          />
+        <PictureElement {...restProps} status={status}>
+          {() => {
+            return (
+              <BaseImg
+                {...restProps}
+                {...(imgProps as any)}
+                src={restProps.fallback}
+              />
+            );
+          }}
         </PictureElement>
       )}
+
+      {/*
+          We'll only render this if props.children is not defined. If it is,
+          we'll assume the user is trying to render a custom error handler
+      */}
+      {typeof restProps.children !== 'function' && status === 'error' && (
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#fdfdfd',
+            boxShadow: 'inset 0px 0px 1px 1px #F5F5F5',
+          }}
+          {...restProps.errorProps}
+        >
+          {errorMessage}
+        </div>
+      )}
+
+      {restProps.children && restProps.children({ status })}
 
       {addNoScript && isImageElement(restProps) && (
         <noscript

@@ -5,25 +5,19 @@ import { Img } from '../src';
 import './example.css';
 
 export default {
-  title: 'React Img',
+  title: 'Basic Usage',
 };
 
 export const basicUsage = () => (
-  <div
-    style={{
-      width: '500px',
-      height: '362px',
-    }}
-  >
-    <Img
-      alt=""
-      placeholderSrc="https://res.cloudinary.com/dhixlxpxv/image/upload/e_blur:3000,w_500/v1589040757/space_wzvnu7.webp"
-      src="https://res.cloudinary.com/dhixlxpxv/image/upload/w_500/v1589040757/space_wzvnu7.webp"
-      // It's recommened to specify dimensions when using loading="lazy"
-      // @see https://crbug.com/954323
-      width="500"
-    />
-  </div>
+  <Img
+    alt=""
+    placeholderSrc="https://res.cloudinary.com/dhixlxpxv/image/upload/e_blur:3000,w_500/v1589040757/space_wzvnu7.webp"
+    src="https://res.cloudinary.com/dhixlxpxv/image/upload/w_500/v1589040757/space_wzvnu7.webp"
+    // It's recommened to specify dimensions when using loading="lazy"
+    // @see https://crbug.com/954323
+    width={500}
+    height={362}
+  />
 );
 
 export const pictureElement = () => (
@@ -44,9 +38,7 @@ export const pictureElement = () => (
           media: '(min-width: 300px)',
         },
       ]}
-      // It's recommened to specify dimensions when using loading="lazy"
-      // @see https://crbug.com/954323
-      width="500"
+      width={500}
     />
   </div>
 );
