@@ -34,7 +34,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "react-img",
+  "name": "@framini/react-img",
   "author": "Francisco Ramini",
   "module": "dist/react-img.esm.js",
   "devDependencies": {
