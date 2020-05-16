@@ -34,11 +34,10 @@ export const pictureElement = () => (
         },
         {
           srcSet:
-            'https://res.cloudinary.com/dhixlxpxv/image/upload/w_400/v1589040757/space_wzvnu7.webp',
+            'https://res.cloudinary.com/dhixlxpxv/image/upload/w_400,h_400/v1589040757/space_wzvnu7.webp',
           media: '(min-width: 300px)',
         },
       ]}
-      width={500}
     />
   </div>
 );

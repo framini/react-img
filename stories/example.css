@@ -1,6 +1,6 @@
 .picture-example {
   width: 200px;
-  height: 265px;
+  height: 200px;
 }
 
 @media (min-width: 300px) {
