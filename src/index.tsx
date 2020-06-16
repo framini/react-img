@@ -160,7 +160,7 @@ type PictureSource = React.DetailedHTMLProps<
   HTMLSourceElement
 >;
 
-type CommonImgProps = {
+export type CommonImgProps = {
   placeholderSrc?: string;
   loading?: 'eager' | 'lazy' | 'auto';
   alt: string;
@@ -170,25 +170,26 @@ type CommonImgProps = {
   errorMessage?: React.ReactNode;
 };
 
-type ImgElementProps = CommonImgProps &
+export type ImgElementProps = CommonImgProps &
   React.ImgHTMLAttributes<HTMLImageElement>;
 
-type PictureElementProps = {
+export type PictureElementProps = {
   sources: PictureSource[];
   fallback: string;
 } & ImgElementProps;
 
-type ImgBaseProps = ImgElementProps | PictureElementProps;
+export type ImgBaseProps = ImgElementProps | PictureElementProps;
 
-type ImgOverload = {
+export type ImgOverload = {
   (props: ImgElementProps): JSX.Element;
   (props: PictureElementProps): JSX.Element;
 };
 
-const isPictureElement = (props: ImgBaseProps): props is PictureElementProps =>
-  'sources' in props && 'fallback' in props;
+export const isPictureElement = (
+  props: ImgBaseProps
+): props is PictureElementProps => 'sources' in props && 'fallback' in props;
 
-const isImageElement = (props: ImgBaseProps): props is ImgElementProps =>
+export const isImageElement = (props: ImgBaseProps): props is ImgElementProps =>
   !isPictureElement(props);
 
 const PictureElement = (props: PictureElementProps & { status: ImgStatus }) => {
