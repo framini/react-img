@@ -11,7 +11,7 @@ React component for rendering images in a performant and good looking way. This 
 With Yarn
 
 ```
-yarn install @framini/react-img
+yarn add @framini/react-img
 ```
 
 With NPM
