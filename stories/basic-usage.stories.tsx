@@ -15,9 +15,27 @@ export const basicUsage = () => (
     src="https://res.cloudinary.com/dhixlxpxv/image/upload/w_500/v1589040757/space_wzvnu7.webp"
     // It's recommened to specify dimensions when using loading="lazy"
     // @see https://crbug.com/954323
-    width={500}
-    height={362}
+    height={500}
+    width={362}
   />
+);
+
+export const fluidImage = () => (
+  <div
+    style={{
+      width: '100%',
+      height: '400px',
+    }}
+  >
+    <Img
+      alt=""
+      placeholderSrc="https://res.cloudinary.com/dhixlxpxv/image/upload/e_blur:3000,w_500/v1589040757/space_wzvnu7.webp"
+      src="https://res.cloudinary.com/dhixlxpxv/image/upload/w_1000/v1589040757/space_wzvnu7.webp"
+      fixedSize={false}
+      height={500}
+      width={362}
+    />
+  </div>
 );
 
 export const pictureElement = () => (

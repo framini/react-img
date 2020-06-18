@@ -168,6 +168,7 @@ export type CommonImgProps = {
   children?: (ops: { status: ImgStatus }) => React.ReactNode;
   errorProps?: React.ComponentProps<'div'>;
   errorMessage?: React.ReactNode;
+  fixedSize?: boolean;
 };
 
 export type ImgElementProps = CommonImgProps &
@@ -207,6 +208,7 @@ export const Img: ImgOverload = ({
   placeholderSrc,
   objectPosition = 'center center',
   errorMessage = 'Image not found',
+  fixedSize = true,
   ...restProps
 }: ImgBaseProps) => {
   const elRef = React.useRef<HTMLDivElement>(null);
@@ -301,8 +303,8 @@ export const Img: ImgOverload = ({
       style={{
         position: 'relative',
         overflow: 'hidden',
-        height: restProps.height ?? '100%',
-        width: restProps.width ?? '100%',
+        height: fixedSize ? restProps.height : '100%',
+        width: fixedSize ? restProps.width : '100%',
       }}
       ref={elRef}
     >
